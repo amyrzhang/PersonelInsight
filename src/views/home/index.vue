@@ -1,5 +1,18 @@
 <template>
 	<div class="home-container layout-pd">
+		<el-row :gutter="20" class="home-card-two">
+			<el-col
+				v-for="(item, index) in chartData"
+				:key="index"
+				:xs="24" :sm="14" :md="14" :lg="12" :xl="12"
+				class="home-media"
+			>
+				<div class="home-card-item">
+					<div :id="'homePieRef' + index" style="height: 100%;"></div>
+				</div>
+			</el-col>
+		</el-row>
+
 		<el-row :gutter="15" class="home-card-one mb15">
 			<el-col
 				:xs="24"
@@ -71,6 +84,165 @@ import * as echarts from 'echarts';
 import { storeToRefs } from 'pinia';
 import { useThemeConfig } from '/@/stores/themeConfig';
 import { useTagsViewRoutes } from '/@/stores/tagsViewRoutes';
+
+// 饼图相关声明
+const chartData = ref([
+		{
+			"title": "姓名",
+			"data": [
+				{ "value": 1500, "name": "张三" },
+				{ "value": 1200, "name": "李四" },
+				{ "value": 900, "name": "王五" },
+				{ "value": 600, "name": "赵六" },
+				{ "value": 300, "name": "孙七" }
+			]
+		},
+		{
+			"title": "性别",
+			"data": [
+				{ "value": 3000, "name": "男" },
+				{ "value": 2000, "name": "女" }
+			]
+		},
+		{
+			"title": "全日制学历",
+			"data": [
+				{ "value": 2500, "name": "本科" },
+				{ "value": 2000, "name": "硕士" },
+				{ "value": 500, "name": "博士" }
+			]
+		},
+		{
+			"title": "最高学历",
+			"data": [
+				{ "value": 2200, "name": "本科" },
+				{ "value": 1800, "name": "硕士" },
+				{ "value": 1000, "name": "博士" }
+			]
+		},
+		{
+			"title": "专业与部门主业相关度",
+			"data": [
+				{ "value": 2500, "name": "高度相关" },
+				{ "value": 1500, "name": "部分相关" },
+				{ "value": 1000, "name": "无关" }
+			]
+		},
+		{
+			"title": "籍贯",
+			"data": [
+				{ "value": 2000, "name": "北京" },
+				{ "value": 1800, "name": "上海" },
+				{ "value": 1200, "name": "广州" },
+				{ "value": 1000, "name": "深圳" },
+				{ "value": 800, "name": "杭州" }
+			]
+		},
+		{
+			"title": "行政机关职务",
+			"data": [
+				{ "value": 1500, "name": "主任" },
+				{ "value": 1300, "name": "副主任" },
+				{ "value": 1200, "name": "科长" },
+				{ "value": 1000, "name": "副科长" },
+				{ "value": 1000, "name": "员工" }
+			]
+		},
+		{
+			"title": "行政机关职级",
+			"data": [
+				{ "value": 1700, "name": "正处级" },
+				{ "value": 1600, "name": "副处级" },
+				{ "value": 1500, "name": "正科级" },
+				{ "value": 1300, "name": "副科级" },
+				{ "value": 900, "name": "其他" }
+			]
+		},
+		{
+			"title": "事业单位管理岗位",
+			"data": [
+				{ "value": 1800, "name": "一级" },
+				{ "value": 1600, "name": "二级" },
+				{ "value": 1400, "name": "三级" },
+				{ "value": 1200, "name": "四级" },
+				{ "value": 1000, "name": "五级" }
+			]
+		},
+		{
+			"title": "事业单位专技岗位",
+			"data": [
+				{ "value": 2000, "name": "高级" },
+				{ "value": 1800, "name": "中级" },
+				{ "value": 1400, "name": "初级" },
+				{ "value": 1200, "name": "助理级" },
+				{ "value": 800, "name": "员级" }
+			]
+		},
+		{
+			"title": "政策性安置",
+			"data": [
+				{ "value": 2200, "name": "有" },
+				{ "value": 2800, "name": "无" }
+			]
+		},
+		{
+			"title": "民族",
+			"data": [
+				{ "value": 4000, "name": "汉族" },
+				{ "value": 500, "name": "满族" },
+				{ "value": 400, "name": "回族" },
+				{ "value": 300, "name": "藏族" },
+				{ "value": 800, "name": "其他" }
+			]
+		},
+		{
+			"title": "党派",
+			"data": [
+				{ "value": 3200, "name": "中国共产党" },
+				{ "value": 900, "name": "中国民主同盟" },
+				{ "value": 800, "name": "中国民主建国会" },
+				{ "value": 700, "name": "中国民主促进会" },
+				{ "value": 400, "name": "无党派人士" }
+			]
+		}
+	]
+);
+
+const createPieChart = (elementId, chartData) => {
+	const chartElement = document.getElementById(elementId);
+	if (chartElement) {
+		const chart = echarts.init(chartElement);
+		chart.setOption({
+			title: {
+				text: chartData.title,
+				left: 'center',
+			},
+			tooltip: {
+				trigger: 'item',
+			},
+			legend: {
+				orient: 'vertical',
+				left: 'left',
+			},
+			series: [
+				{
+					name: '访问来源',
+					type: 'pie',
+					radius: '50%',
+					data: chartData.data,
+				},
+			],
+		});
+	} else {
+		console.error(`Element with id ${elementId} not found`);
+	}
+};
+
+onMounted(() => {
+	chartData.value.forEach((data, index) => {
+		createPieChart('homePieRef' + index, data);
+	});
+});
 
 // 定义变量内容
 const homeLineRef = ref();
@@ -544,6 +716,9 @@ watch(
 
 <style scoped lang="scss">
 $homeNavLengh: 8;
+.home-media {
+	margin-bottom: 20px;
+}
 .home-container {
 	overflow: hidden;
 	.home-card-one,
